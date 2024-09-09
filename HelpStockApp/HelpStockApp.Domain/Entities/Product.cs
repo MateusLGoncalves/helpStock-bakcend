@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using HelpStockApp.Domain.Validation;
 
 namespace HelpStockApp.Domain.Entities
 {
@@ -33,6 +29,28 @@ namespace HelpStockApp.Domain.Entities
             Price = price;
             Stock = stock;
             Image = image;
+        }
+
+        private void ValidateDomain(string name, string description, decimal price, int stock, string image)
+        {
+            DomainExceptionValidation.When(price < 0, "Invalid Price, price negative value is unlikely");
+
+            DomainExceptionValidation.When(string.IsNullOrEmpty(name), "Invalid name, null name");
+            DomainExceptionValidation.When(name.Length < 3, "Invalid name, minimum 3 characters");
+            DomainExceptionValidation.When(description.Length < 5, "Invalid description, minimum 5 characters");
+            DomainExceptionValidation.When(string.IsNullOrEmpty(description), "Invalid description, null description");
+            DomainExceptionValidation.When(stock < 0, "Invalid Stock, negative value");
+            DomainExceptionValidation.When(image.Length > 250, "Invalid URL, maximum 250 characters");
+
+
+            /*
+             * Nome nulo 
+             * Nome menor que 3 caracteres
+             * Descrição menor que 5 caracteres 
+             * Descrição nula 
+             * Stock negativo
+             * URL de imagem maior que 250 caracteres
+             */
         }
     }
 }
