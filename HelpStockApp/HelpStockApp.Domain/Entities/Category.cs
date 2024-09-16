@@ -2,6 +2,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.PortableExecutable;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -18,6 +19,8 @@ namespace HelpStockApp.Domain.Entities
 
         public Category(int id, string name)
         {
+            DomainExceptionValidation.When(id < 0, "Invalid Id value");
+            DomainExceptionValidation.When(id == null, "Invalid Id, id null");
             Id = id;
             ValidateDomain(name);
         }
