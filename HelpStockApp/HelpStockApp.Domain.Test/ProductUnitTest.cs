@@ -1,6 +1,7 @@
 ﻿using FluentAssertions;
 using HelpStockApp.Domain.Entities;
 using HelpStockApp.Domain.Validation;
+using Newtonsoft.Json.Linq;
 using Xunit;
 
 namespace HelpStockApp.Domain.Test
@@ -86,6 +87,38 @@ namespace HelpStockApp.Domain.Test
             Action action = () => new Product(0, "Product", "Description", -1, 10, "URL");
             action.Should().Throw<DomainExceptionValidation>()
                 .WithMessage("Invalid Price, price negative value is unlikely!");
+        }
+
+        [Fact(DisplayName = "Create Product With invalid description null parameter")]
+        public void CreateProduct_WithInvalidDescriptionParameter_ResultException()
+        {
+            Action action = () => new Product(0, "Product", null, 100, 10, "URL");
+            action.Should().Throw<DomainExceptionValidation>()
+                .WithMessage("Invalid description, description is required!");
+        }
+
+        [Fact(DisplayName = "Create Product With invalid description void parameter")]
+        public void CreateProduct_WithInvalidDescriptionParameterVoid_ResultException()
+        {
+            Action action = () => new Product(0, "Product", "", 100, 10, "URL");
+            action.Should().Throw<DomainExceptionValidation>()
+                .WithMessage("Invalid description, description is required!");
+        }
+
+        [Fact(DisplayName = "Create Product With description too short parameter")]
+        public void CreateProduct_WithDescriptionTooShortParameter_ResultException()
+        {
+            Action action = () => new Product(0, "Product", "Des", 100, 10, "URL");
+            action.Should().Throw<DomainExceptionValidation>()
+                .WithMessage("Invalid name, too short. minimum 5 characters!");
+        }
+
+        [Fact(DisplayName = "Create Product With Stock too long parameter")]
+        public void CreateProduct_WithStockTooLongParameter_ResultException()
+        {
+            Action action = () => new Product(0, "Product", "Description", 100, 1000, "URL");
+            action.Should().Throw<DomainExceptionValidation>()
+                .WithMessage("Invalid Stock, stock value is too long!");
         }
 
         #endregion

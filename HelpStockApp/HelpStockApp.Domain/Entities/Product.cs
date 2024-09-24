@@ -32,6 +32,7 @@ namespace HelpStockApp.Domain.Entities
             DomainExceptionValidation.When(description.Length < 5, "Invalid name, too short. minimum 5 characters!");
             DomainExceptionValidation.When(image.Length > 250, "Invalid image URL, too long. maximum 250 characters!");
             DomainExceptionValidation.When(string.IsNullOrEmpty(image), "Invalid image URL, URL is required!");
+            DomainExceptionValidation.When(stock > 999, "Invalid Stock, stock value is too long!");
 
             Name = name;
             Description = description;
