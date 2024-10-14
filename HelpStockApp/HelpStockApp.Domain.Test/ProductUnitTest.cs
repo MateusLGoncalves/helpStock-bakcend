@@ -1,128 +1,112 @@
 ﻿using FluentAssertions;
 using HelpStockApp.Domain.Entities;
 using HelpStockApp.Domain.Validation;
-using Newtonsoft.Json.Linq;
 using Xunit;
+using Xunit.Sdk;
 
 namespace HelpStockApp.Domain.Test
 {
+    #region Testes Positivos de Categoria
     public class ProductUnitTest
     {
-        #region Testes Positivos de Produto
         [Fact(DisplayName = "Create Product With Valid State")]
         public void CreateProduct_WithValidParemeters_ResultObejectsValidState()
         {
-            Action action = () => new Product(0, "Product", "Description", 100, 10, "URL");
+            Action action = () => new Product("Placa Mãe", "Placa mãe Asrock steel legend am4", 600, 3, "http://surl.li/ycatry");
             action.Should().NotThrow<DomainExceptionValidation>();
         }
         #endregion
 
-        #region Testes Negativos de Produto 
+        #region Testes Negativos de Categoria
         [Fact(DisplayName = "Create Product With Invalid Id")]
         public void CreateProduct_WithInvalidParemetersId_ResultException()
         {
-            Action action = () => new Product(-1, "Product", "Description", 100, 10, "URL");
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(-1, "Placa Mãe", "Placa mãe Asrock steel legend am4", 600, 3, imageUrl);
             action.Should().Throw<DomainExceptionValidation>()
                 .WithMessage("Invalid Id value.");
         }
-
-        [Fact(DisplayName = "Create Product With Invalid Name Null")]
-        public void CreateProduct_WithInvalidParemetersNameNull_ResultException()
-        {
-            Action action = () => new Product(0, null, "Description", 100, 10, "URL");
-            action.Should().Throw<DomainExceptionValidation>()
-                .WithMessage("Invalid name, name is required!");
-        }
-
-        [Fact(DisplayName = "Create Product With Invalid Name")]
-        public void CreateProduct_WithInvalidParemetersNameVoid_ResultException()
-        {
-            Action action = () => new Product(0, "", "Description", 100, 10, "URL");
-            action.Should().Throw<DomainExceptionValidation>()
-                .WithMessage("Invalid name, name is required!");
-        }
-
-        [Fact(DisplayName = "Create Product With Name Too Short Parameter")]
+        [Fact(DisplayName = "Create Product With invalid Name")]
         public void CreateProduct_WithNameTooShortParameter_ResultException()
         {
-            Action action = () => new Product(0, "Pr", "Description", 100, 10, "URL");
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(1, "Pl", "Placa mãe Asrock steel legend am4", 600, 3, imageUrl);
             action.Should().Throw<DomainExceptionValidation>()
                 .WithMessage("Invalid name, too short. minimum 3 characters!");
         }
-
-        [Fact(DisplayName = "Create Product With Image too long parameter")]
-        public void CreateProduct_WithImageTooLongParameter_ResultException()
+        [Fact(DisplayName = "Create Product With null Name")]
+        public void CreateProduct_WithNullName_ResultException()
         {
-            Action action = () => new Product(0, "Product", "Description", 100, 10, "https://img.freepik.com/fotos-premium/arvores-que-crescem-na-floresta_1048944-30368869.jpg?w=900https://img.freepik.com/fotos-premium/arvores-que-crescem-na-floresta_1048944-30368869.jpg?w=900https://img.freepik.com/fotos-premium/arvores-que-crescem-na-floresta_1048944-30368869.jpg?w=900");
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(1, null, "Placa mãe Asrock steel legend am4", 600, 3, imageUrl);
+            action.Should().Throw<DomainExceptionValidation>()
+                .WithMessage("Invalid name, name is required!");
+        }
+        [Fact(DisplayName = "Create Product With too long image URL")]
+        public void CreateProduct_With_Too_Long_Image_URL_ResultException()
+        {
+            var longImageUrl = "https://www.google.com/search?q=url+com++de+251+caracteres&sca_esv=60dc7b8df89f0db7&sca_upv=1&rlz=1C1GCEU_pt-BRBR1123BR1123&ei=dXPxZta5IvDc5OUP2Jem6Aw&ved=0ahUKEwiWyJKAnNmIAxVwLrkGHdiLCc0Q4dUDCA8&uact=5&oq=url+com++de+251+caracteres&gs_lp=Egxnd3Mtd2l6LXNlcnAiGnVybCBjb20gIGRlIDI1MSBjYXJhY3RlcmVzMggQIRigARjDBEi9D1CuA1jFDXADeAGQAQCYAbIBoAG_BqoBAzAuNrgBA8gBAPgBAZgCCKACoAXCAgoQABiwAxjWBBhHwgIIEAAYgAQYogTCAgQQIRgKmAMAiAYBkAYIkgcDMy41oAesDw&sclient=gws-wiz-serp";
+            Action action = () => new Product(1, "Placa Mãe", "Placa mãe Asrock steel legend am4", 600, 3, longImageUrl);
             action.Should().Throw<DomainExceptionValidation>()
                 .WithMessage("Invalid image URL, too long. maximum 250 characters!");
         }
-
-        [Fact(DisplayName = "Create Product With Image null parameter")]
-        public void CreateProduct_WithImageNullParameter_ResultException()
+        [Fact(DisplayName = "Create Product With null image URL")]
+        public void CreateProduct_WithNullImageUrl_ResultException()
         {
-            Action action = () => new Product(0, "Product", "Description", 100, 10, null);
+            Action action = () => new Product(1, "Placa Mãe", "Placa mãe Asrock steel legend am4", 600, 3, null);
             action.Should().Throw<NullReferenceException>();
-        }
 
-        [Fact(DisplayName = "Create Product With Image missing parameter")]
-        public void CreateProduct_WithImageMissingParameter_ResultException()
+        }
+        [Fact(DisplayName = "Create Product With empty image URL")]
+        public void CreateProduct_With_Empty_Image_URL_ResultException()
         {
-            Action action = () => new Product(0, "Product", "Description", 100, 10, "");
+            var emptyImageUrl = "";
+            Action action = () => new Product(1, "Placa Mãe", "Placa mãe Asrock steel legend am4", 600, 3, emptyImageUrl);
             action.Should().Throw<DomainExceptionValidation>()
-                .WithMessage("Invalid image URL, URL is required!");
+                .WithMessage("Invalid URL, URL is required!");
         }
-
-        [Fact(DisplayName = "Create Product With Stock negative parameter")]
-        public void CreateProduct_WithStockNegativeParameter_ResultException()
+        [Fact(DisplayName = "Create Product With Negative Stock")]
+        public void CreateProduct_With_Negative_Stock_ResultException()
         {
-            Action action = () => new Product(0, "Product", "Description", 100, -1, "URL");
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(1, "Placa Mãe", "Placa mãe Asrock steel legend am4", 600, -3, imageUrl);
             action.Should().Throw<DomainExceptionValidation>()
                 .WithMessage("Invalid Stock, stock negative value is unlikely!");
         }
-
-        [Fact(DisplayName = "Create Product With Price negative parameter")]
-        public void CreateProduct_WithPriceNegativeParameter_ResultException()
+        [Fact(DisplayName = "Create Product With Negative Price")]
+        public void CreateProduct_With_Negative_Price_ResultException()
         {
-            Action action = () => new Product(0, "Product", "Description", -1, 10, "URL");
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(1, "Placa Mãe", "Placa mãe Asrock steel legend am4", -600, 3, imageUrl);
             action.Should().Throw<DomainExceptionValidation>()
                 .WithMessage("Invalid Price, price negative value is unlikely!");
         }
-
-        [Fact(DisplayName = "Create Product With invalid description null parameter")]
-        public void CreateProduct_WithInvalidDescriptionParameter_ResultException()
+        [Fact(DisplayName = "Create Product With Empty Description")]
+        public void CreateProduct_With_Empty_Description_ResultException()
         {
-            Action action = () => new Product(0, "Product", null, 100, 10, "URL");
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(1, "Placa Mãe", "", 600, 3, imageUrl);
             action.Should().Throw<DomainExceptionValidation>()
                 .WithMessage("Invalid description, description is required!");
-        }
 
-        [Fact(DisplayName = "Create Product With invalid description void parameter")]
-        public void CreateProduct_WithInvalidDescriptionParameterVoid_ResultException()
+        }
+        [Fact(DisplayName = "Create Product With Null description")]
+        public void CreateProduct_With_Null_Description_ResultException()
         {
-            Action action = () => new Product(0, "Product", "", 100, 10, "URL");
-            action.Should().Throw<DomainExceptionValidation>()
-                .WithMessage("Invalid description, description is required!");
-        }
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(1, "Placa Mãe", null, 600, 3, imageUrl);
+            action.Should().Throw<DomainExceptionValidation>().WithMessage("Invalid description, description is required!");
 
-        [Fact(DisplayName = "Create Product With description too short parameter")]
-        public void CreateProduct_WithDescriptionTooShortParameter_ResultException()
+        }
+        [Fact(DisplayName = "Create Product With Short Description")]
+        public void CreateProduct_With_Short_Description_ResultException()
         {
-            Action action = () => new Product(0, "Product", "Des", 100, 10, "URL");
-            action.Should().Throw<DomainExceptionValidation>()
-                .WithMessage("Invalid name, too short. minimum 5 characters!");
+            var imageUrl = "http://surl.li/ycatry";
+            Action action = () => new Product(1, "Placa Mãe", "Pla", 600, 3, imageUrl);
+            action.Should().Throw<DomainExceptionValidation>().WithMessage("Invalid name, too short. minimum 5 characters!");
+
         }
-
-        [Fact(DisplayName = "Create Product With Stock too long parameter")]
-        public void CreateProduct_WithStockTooLongParameter_ResultException()
-        {
-            Action action = () => new Product(0, "Product", "Description", 100, 1000, "URL");
-            action.Should().Throw<DomainExceptionValidation>()
-                .WithMessage("Invalid Stock, stock value is too long!");
-        }
-
-        #endregion
-
 
     }
+    #endregion
 }
